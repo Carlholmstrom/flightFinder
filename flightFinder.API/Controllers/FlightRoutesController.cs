@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using flightFinder.API.Data;
+using flightFinder.API.DTOs.Outgoing;
 using flightFinder.API.Interfaces;
 using flightFinder.API.Models;
 
@@ -16,10 +18,12 @@ namespace flightFinder.API.Controllers
     public class FlightRoutesController : ControllerBase
     {
         private readonly IFlightRouteRepository _flightRouteRepository;
+        private readonly IMapper _mapper;
 
-        public FlightRoutesController(IFlightRouteRepository flightRouteRepository)
+        public FlightRoutesController(IFlightRouteRepository flightRouteRepository, IMapper mapper)
         {
             _flightRouteRepository = flightRouteRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -40,33 +44,16 @@ namespace flightFinder.API.Controllers
 
             return flightRoute;
         }
-       [HttpGet("{departureDestination}/{arrivalDestination}")]
-       public async Task<ActionResult<IEnumerable<object>>> GetFlightsByRoute(string departureDestination, string arrivalDestination)
-       {
-           var routes = await _flightRouteRepository.SearchFlightRoutesAsync(departureDestination, arrivalDestination);
-       
-           var result = routes.Select(r => new
-           {
-               route_id = r.RouteId,
-               departureDestination = r.DepartureDestination,
-               arrivalDestination = r.ArrivalDestination,
-               itineraries = r.Itineraries.Where(f => f != null && f.AvailableSeats >= 1).Select(f => new
-               {
-                   flight_id = f.FlightId,
-                   departureAt = f.DepartureAt,
-                   arrivalAt = f.ArrivalAt,
-                   availableSeats = f.AvailableSeats,
-                   prices = new
-                   {
-                       currency = f.Prices.Currency,
-                       adult = f.Prices.Adult,
-                       child = f.Prices.Child
-                   }
-               })
-           });
-       
-           return Ok(result);
-       }
+        [HttpGet("{departureDestination}/{arrivalDestination}")]
+        public async Task<ActionResult<IEnumerable<FlightRouteDto>>> GetFlightsByRoute(string departureDestination, string arrivalDestination)
+        {
+            var routes = await _flightRouteRepository.SearchFlightRoutesAsync(departureDestination, arrivalDestination);
+
+            var result = _mapper.Map<IEnumerable<FlightRouteDto>>(routes);
+
+            return Ok(result);
+        }
+
 
 
     }

@@ -15,6 +15,7 @@ builder.Services.AddDbContext<FlightDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FlightFinder"));
 
 });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightRouteRepository, FlightRouteRepository>();
 builder.Services.AddEndpointsApiExplorer();
