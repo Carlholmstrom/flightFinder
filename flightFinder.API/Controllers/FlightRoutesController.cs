@@ -45,14 +45,15 @@ namespace flightFinder.API.Controllers
             return flightRoute;
         }
         [HttpGet("{departureDestination}/{arrivalDestination}")]
-        public async Task<ActionResult<IEnumerable<FlightRouteDto>>> GetFlightsByRoute(string departureDestination, string arrivalDestination)
+        public async Task<ActionResult<IEnumerable<FlightRouteDto>>> GetFlightsByRoute(string departureDestination, string arrivalDestination, DateTime departureTime, DateTime arrivalTime)
         {
-            var routes = await _flightRouteRepository.SearchFlightRoutesAsync(departureDestination, arrivalDestination);
+            var routes = await _flightRouteRepository.SearchFlightRoutesAsync(departureDestination, arrivalDestination, departureTime, arrivalTime);
 
             var result = _mapper.Map<IEnumerable<FlightRouteDto>>(routes);
 
             return Ok(result);
         }
+
 
 
 

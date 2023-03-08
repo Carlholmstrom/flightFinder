@@ -27,22 +27,6 @@ public class FlightRepository : IFlightRepository
                         && f.FlightRoute.ArrivalDestination == arrivalDestination)
             .ToListAsync();
     }
-
-    public async Task<IEnumerable<Flight>> GetFlightsAsync(string departureDestination, string arrivalDestination, DateTime departureTime, DateTime arrivalTime)
-    {
-        var flights = await _context.Flights
-            .Include(f => f.FlightRoute)
-            .Where(f => f.FlightRoute.DepartureDestination == departureDestination && 
-                        f.FlightRoute.ArrivalDestination == arrivalDestination && 
-                        f.DepartureAt >= departureTime && 
-                        f.ArrivalAt <= arrivalTime && 
-                        f.AvailableSeats >= 1)
-            .ToListAsync();
-
-        return flights;
-    }
-
-
     
     public async Task<Flight> GetAsync(string id)
     {
