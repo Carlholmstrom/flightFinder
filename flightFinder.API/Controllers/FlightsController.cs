@@ -41,6 +41,19 @@ namespace flightFinder.API
 
             return flight;
         }
+        // [HttpGet("{departureDestination}/{arrivalDestination}")]
+        // public async Task<IEnumerable<Flight>> GetFlights(string departureDestination, string arrivalDestination)
+        // {
+        //     return await _flightRepository.GetFlightsByRouteAsync(departureDestination, arrivalDestination);
+        // }
+        
+        [HttpGet("{departureDestination}/{arrivalDestination}")]
+        public async Task<IEnumerable<Flight>> GetFlights(string departureDestination, string arrivalDestination, DateTime departureTime, DateTime arrivalTime)
+        {
+            return await _flightRepository.GetFlightsAsync(departureDestination, arrivalDestination, departureTime, arrivalTime);
+        }
+
+
         
     }
 }
