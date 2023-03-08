@@ -1,9 +1,23 @@
+using System.Text.Json.Serialization;
+using flightFinder.API.Data;
+using flightFinder.API.Interfaces;
+using flightFinder.API.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddDbContext<FlightDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FlightFinder"));
+
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
