@@ -40,5 +40,34 @@ namespace flightFinder.API.Controllers
 
             return flightRoute;
         }
+       [HttpGet("{departureDestination}/{arrivalDestination}")]
+       public async Task<ActionResult<IEnumerable<object>>> GetFlightsByRoute(string departureDestination, string arrivalDestination)
+       {
+           var routes = await _flightRouteRepository.SearchFlightRoutesAsync(departureDestination, arrivalDestination);
+       
+           var result = routes.Select(r => new
+           {
+               route_id = r.RouteId,
+               departureDestination = r.DepartureDestination,
+               arrivalDestination = r.ArrivalDestination,
+               itineraries = r.Itineraries.Where(f => f != null && f.AvailableSeats >= 1).Select(f => new
+               {
+                   flight_id = f.FlightId,
+                   departureAt = f.DepartureAt,
+                   arrivalAt = f.ArrivalAt,
+                   availableSeats = f.AvailableSeats,
+                   prices = new
+                   {
+                       currency = f.Prices.Currency,
+                       adult = f.Prices.Adult,
+                       child = f.Prices.Child
+                   }
+               })
+           });
+       
+           return Ok(result);
+       }
+
+
     }
 }
