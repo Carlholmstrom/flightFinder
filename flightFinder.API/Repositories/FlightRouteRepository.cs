@@ -18,6 +18,7 @@ public class FlightRouteRepository: IFlightRouteRepository
     {
         return await _context.FlightRoutes.ToListAsync();
     }
+
     public async Task<IEnumerable<FlightRoute>> SearchFlightRoutesAsync(string departureDestination, string arrivalDestination, DateTime departureTime, DateTime arrivalTime)
     {
         if (string.IsNullOrEmpty(departureDestination))

@@ -41,7 +41,21 @@ namespace flightFinder.API
 
             return flight;
         }
-      
+        [HttpGet("{departureDestination}/{arrivalDestination}")]
+        public async Task<ActionResult<IEnumerable<Flight>>> GetFlightsByRouteAsync(string departureDestination, string arrivalDestination,DateTime date)
+        {
+            var flights = await _flightRepository.GetFlightsByRouteAsync(departureDestination, arrivalDestination, date);
+
+            // If there are no direct flights, search for flights with layovers
+            if (flights.Count() == 0)
+            {
+                flights = await _flightRepository.GetFlightsByRouteWithLayoverAsync(departureDestination,
+                    arrivalDestination, date);
+            }
+
+            return Ok(flights);
+        }
+    
         
     }
 }
