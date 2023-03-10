@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using flightFinder.API.Data;
+using flightFinder.API.DTOs.Outgoing;
 using flightFinder.API.Interfaces;
 using flightFinder.API.Models;
 using flightFinder.API.Repositories;
@@ -17,10 +19,12 @@ namespace flightFinder.API
     public class FlightsController : ControllerBase
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly IMapper _mapper;
 
-        public FlightsController(IFlightRepository flightRepository)
+        public FlightsController(IFlightRepository flightRepository, IMapper mapper)
         {
             _flightRepository = flightRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -41,8 +45,9 @@ namespace flightFinder.API
 
             return flight;
         }
+       
         [HttpGet("{departureDestination}/{arrivalDestination}")]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlightsByRouteAsync(string departureDestination, string arrivalDestination,DateTime date)
+        public async Task<ActionResult<IEnumerable<FlightWithLayoverDto>>> GetFlightsByRouteAsync(string departureDestination, string arrivalDestination,DateTime date)
         {
             var flights = await _flightRepository.GetFlightsByRouteAsync(departureDestination, arrivalDestination, date);
 
@@ -52,10 +57,11 @@ namespace flightFinder.API
                 flights = await _flightRepository.GetFlightsByRouteWithLayoverAsync(departureDestination,
                     arrivalDestination, date);
             }
-
-            return Ok(flights);
+            
+            var flightDto = _mapper.Map<IEnumerable<FlightWithLayoverDto>>(flights);
+            return Ok(flightDto);
         }
-    
+
         
     }
 }

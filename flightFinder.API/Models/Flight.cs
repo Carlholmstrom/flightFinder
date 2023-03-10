@@ -11,4 +11,5 @@ public class Flight
     public int AvailableSeats { get; set; }
     public Price Prices { get; set; }
     public FlightRoute FlightRoute { get; set; }
+    
 }

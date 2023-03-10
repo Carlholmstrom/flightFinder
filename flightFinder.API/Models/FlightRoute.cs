@@ -13,6 +13,9 @@ public class FlightRoute
     public string LayoverDestination { get; set; }
     [NotMapped]
     public TimeSpan LayoverDuration { get; set; }
+    [NotMapped]
+    public decimal TotalPrice { get; set; }
+
     public List<Flight> Itineraries { get; set; }
     
 }

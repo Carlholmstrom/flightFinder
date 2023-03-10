@@ -8,6 +8,8 @@ public class FlightDto
     public int AvailableSeats { get; set; }
     public string FlightTime => (ArrivalAt - DepartureAt).ToString(@"h\hmm\m");
     public PriceDto Prices { get; set; }
+    //public FlightRouteDto FlightRoute { get; set; }
+    
 }
 
 
