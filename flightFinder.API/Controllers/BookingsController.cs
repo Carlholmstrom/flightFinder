@@ -1,5 +1,6 @@
 using flightFinder.API.Data;
 using flightFinder.API.DTOs.Incoming;
+using flightFinder.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,24 +10,23 @@ namespace flightFinder.API.Controllers;
 [Route("api/[controller]")]
 public class BookingsController : ControllerBase
 {
-    private readonly FlightDbContext _context;
+    private readonly IBookingRepository _bookingRepository;
 
-    public BookingsController(FlightDbContext context)
+    public BookingsController(IBookingRepository bookingRepository)
     {
-        _context = context;
+        _bookingRepository = bookingRepository;
     }
-
-    [HttpPost]
-    public async Task<ActionResult> BookFlightsAsync(IncomingBookingDto bookingDto)
+  
+    [HttpPost("Create")]
+    public async Task<ActionResult> CreateAsync( IncomingBookingDto incomingBooking )
     {
-        var flights = await _context.Flights.Where(f => bookingDto.FlightNumbers.Contains(f.FlightId)).ToListAsync();
-    
-        if (flights.Sum(f => f.AvailableSeats) < bookingDto.Seats)
+        foreach (var flightId in incomingBooking.FlightNumbers)
         {
-            return BadRequest("Not enough seats available for selected flights.");
+            if(! await _bookingRepository.SeatsAvailableAsync(flightId, incomingBooking.Seats)){
+                return NotFound("Not enough available seats where found");
+            }
         }
-    
-        return Ok("Booking successful.");
+        return await _bookingRepository.CreateBooking(incomingBooking) ? Ok("Your booking has been created") : BadRequest("Something went wrong");
     }
 
 }

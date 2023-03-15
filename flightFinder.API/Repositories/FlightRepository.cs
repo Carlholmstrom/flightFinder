@@ -86,12 +86,12 @@ public class FlightRepository : IFlightRepository
                       ArrivalAt = flightFromLayover.ArrivalAt,
                       AvailableSeats = Math.Min(flightToLayover.AvailableSeats, flightFromLayover.AvailableSeats),
                       
-                      // Prices = new Price
-                      // {
-                      //     Currency = flightToLayover.Prices.Currency, 
-                      //     Adult = flightToLayover.Prices.Adult,
-                      //     Child = flightToLayover.Prices.Child
-                      // },
+                      Prices = new Price
+                      {
+                          Currency = flightToLayover.Prices.Currency, 
+                          Adult = flightToLayover.Prices.Adult,
+                          Child = flightToLayover.Prices.Child
+                      },
                       
                       FlightRoute = new FlightRoute
                       {
