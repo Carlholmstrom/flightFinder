@@ -6,7 +6,7 @@ public class FlightWithLayoverDto
     public DateTime DepartureAt { get; set; }
     public DateTime ArrivalAt { get; set; }
     public int AvailableSeats { get; set; }
-   // public PriceDto Prices { get; set; }
+    public PriceDto Prices { get; set; }
     public FlightRouteDto FlightRoute { get; set; }
     public string TotalTravelTime => (ArrivalAt - DepartureAt).ToString(@"h\hmm\m");
     

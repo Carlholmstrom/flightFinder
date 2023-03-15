@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import FlightIcon from "@mui/icons-material/Flight";
 import HotelIcon from "@mui/icons-material/Hotel";
 import CarRentalIcon from "@mui/icons-material/DriveEta";
+import { Link } from "react-router-dom";
 
 import {
   List,
@@ -16,7 +17,7 @@ import {
 } from "@mui/material";
 
 const Navbar = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -28,7 +29,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <Toolbar style={{ backgroundColor: "#fff" }}>
+      <Toolbar style={{ backgroundColor: "#202124" }}>
         <IconButton
           edge="start"
           style={{ marginRight: "16px" }}
@@ -36,9 +37,9 @@ const Navbar = () => {
           aria-label="menu"
           onClick={handleDrawerOpen}
         >
-          <MenuIcon style={{ color: "#000" }} />
+          <MenuIcon style={{ color: "#fff" }} />
         </IconButton>
-        <Typography variant="h6" style={{ color: "#000" }}>
+        <Typography variant="h6" style={{ color: "#fff" }}>
           Salt Flights
         </Typography>
       </Toolbar>
@@ -48,6 +49,8 @@ const Navbar = () => {
             <ListItem
               button
               style={{ paddingTop: "16px", paddingBottom: "16px" }}
+              component={Link}
+              to="/"
             >
               <ListItemIcon>
                 <FlightIcon />

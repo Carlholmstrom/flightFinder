@@ -23,13 +23,41 @@ public class FlightRepository : IFlightRepository
     public async Task<IEnumerable<Flight>> GetFlightsByRouteAsync(string departureDestination, string arrivalDestination, DateTime date)
     {
         var flights = await _context.Flights
-            .Include(f => f.FlightRoute)
+            .Include(f => f.Prices)
             .Where(f => f.FlightRoute.DepartureDestination == departureDestination
                         && f.FlightRoute.ArrivalDestination == arrivalDestination
                         && f.DepartureAt.Date == date.Date
                         && f.AvailableSeats > 0)
             .ToListAsync();
-        return flights;
+
+        var flightPlan = new List<Flight>();
+        foreach (var flight in flights)
+        {
+            flightPlan.Add(new Flight
+            {
+                FlightId = flight.FlightId,
+                //DepartureDestination = flight.FlightRoute.DepartureDestination,
+                DepartureAt = flight.DepartureAt,
+                //ArrivalDestination = flight.FlightRoute.ArrivalDestination,
+                ArrivalAt = flight.ArrivalAt,
+                AvailableSeats = flight.AvailableSeats,
+                Prices = new Price
+                {
+                    Currency = flight.Prices.Currency, 
+                    Adult = flight.Prices.Adult,
+                    Child = flight.Prices.Child
+                },
+                FlightRoute = new FlightRoute
+                {
+                    DepartureDestination = departureDestination,
+                    ArrivalDestination = arrivalDestination
+                }
+               
+
+            });
+        }
+  
+        return flightPlan;
     }
 
     public async Task<Flight> GetAsync(string id)

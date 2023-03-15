@@ -51,14 +51,13 @@ namespace flightFinder.API
         {
             var flights = await _flightRepository.GetFlightsByRouteAsync(departureDestination, arrivalDestination, date);
 
-            // If there are no direct flights, search for flights with layovers
             if (flights.Count() == 0)
             {
                 flights = await _flightRepository.GetFlightsByRouteWithLayoverAsync(departureDestination,
                     arrivalDestination, date);
             }
             
-            var flightDto = _mapper.Map<IEnumerable<FlightWithLayoverDto>>(flights);
+            var flightDto = _mapper.Map<IEnumerable<FlightDto>>(flights);
             return Ok(flightDto);
         }
 
